@@ -44,8 +44,12 @@ def capturer(folder: str, xab: (float, float, float), lock: threading.Lock, flag
         with lock:
             if flag[0]:
                 break
-        time.sleep(x)
+        t1 = time.time()
         s1, s2 = s2, get_screenshot()
+        t2 = time.time()
+        tdiff = t2 - t1
+        if tdiff < x:
+            time.sleep(x - tdiff)
         if s1 and s2 and s1.diff(s2) < a: # almost static screen; log it as an event
             if (not screenshot_queue) or screenshot_queue[-1].diff(s1) > b:
                 screenshot_queue.append(s1)
@@ -77,7 +81,7 @@ if __name__ == '__main__':
     os.remove(dummy_path)
 
     # argument preparation
-    xab = (max(capture_time * 1.5, 1.0), 1.0, 10.0)
+    xab = (max(capture_time * 2, 1.0), 1.0, 10.0)
 
     # flag preparation
     lock = threading.Lock()
