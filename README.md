@@ -2,6 +2,12 @@
 
 automatically capturing "important" screenshots over long time periods
 
+#### design goals (work-in-progress)
+
+- lightweight: can run in the background over long time periods; much lighter than screen recording; no heavy computations, no machine learning
+- easy to use: automatically determine the best parameters as much as possible; no complicated configurations
+- cross platform: windows, linux, macos
+
 ## algorithm
 
 The program uses three parameters `x`, `a`, `b`.
