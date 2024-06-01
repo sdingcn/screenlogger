@@ -2,21 +2,21 @@
 
 automatically capturing "important" screenshots over long time periods
 
-#### design goals (work-in-progress)
+#### design goals
 
-- lightweight: can run in the background over long time periods; much lighter than screen recording; no heavy computations, no machine learning
-- easy to use: automatically determine the best parameters as much as possible; no complicated configurations
+- lightweight: can run over long time periods; lighter than recording; no heavy computations
+- easy to use: automatically determine most parameters; no complicated configurations
 - cross platform: windows, linux, macos
 
 ## algorithm
 
-The program uses three parameters `x`, `a`, `b`.
-Currently `x = max(2 * screenshot_time_on_this_machine, 1.0)`, `a = 1.0`, `b = 10.0`.
-
+The main algorithm uses three parameters `x`, `a`, `b`.
 It maintains and updates two screenshots separated by `x` seconds;
 if the screen pixel difference is `< a%` during `x` seconds,
 the program regards the screen as an "event",
 and tries to add it to an event queue if its difference with the previous event is `> b%`.
+
+Currently `x = max(2 * screenshot_time_on_this_machine, 1.0)`, `a = 1.0`, `b = 10.0`.
 
 ## requirements
 

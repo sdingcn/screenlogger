@@ -53,8 +53,12 @@ def capturer(folder: str, xab: (float, float, float), lock: threading.Lock, flag
         if s1 and s2 and s1.diff(s2) < a: # almost static screen; log it as an event
             if (not screenshot_queue) or screenshot_queue[-1].diff(s1) > b:
                 screenshot_queue.append(s1)
+        if len(screenshot_queue) > 10: # TODO: fine-tune the parameter
+            for i in range(10):
+                s = screenshot_queue.popleft()
+                s.save(os.path.join(folder, f'{s.moment}.png'))
 
-    # save screenshots
+    # save unsaved screenshots
     for s in screenshot_queue:
         s.save(os.path.join(folder, f'{s.moment}.png'))
 
@@ -81,7 +85,7 @@ if __name__ == '__main__':
     os.remove(dummy_path)
 
     # argument preparation
-    xab = (max(capture_time * 2, 1.0), 1.0, 10.0)
+    xab = (max(capture_time * 2, 1.0), 1.0, 10.0) # TODO: fine-tune these parameters
 
     # flag preparation
     lock = threading.Lock()
@@ -91,14 +95,14 @@ if __name__ == '__main__':
     worker = threading.Thread(target = capturer, args = (folder, xab, lock, flag))
     worker.start()
     print(f'[{sys.argv[0]}] Note: started capturer with (x, a, b) = {xab} ...'
-           'press Ctrl+C once to stop and save')
+           'press Ctrl+C once to stop')
 
     # monitor Ctrl+C
     try:
         while True:
             time.sleep(0.1)
     except KeyboardInterrupt:
-        print(f'[{sys.argv[0]}] Note: stopping and saving into {folder} ...')
+        print(f'[{sys.argv[0]}] Note: stopping ...')
         with lock:
             flag[0] = True
         worker.join() # wait for the thread to terminate
